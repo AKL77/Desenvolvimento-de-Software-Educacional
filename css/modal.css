@@ -1,0 +1,46 @@
+.modal {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex; justify-content: center; align-items: center; z-index: 1000;
+}
+.modal-content {
+    background: var(--color-white); border-radius: 12px;
+    width: 100%; max-width: 500px; box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+    animation: scaleUp 0.3s ease; overflow: hidden;
+}
+
+@keyframes scaleUp { from { transform: scale(0.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+.modal-header {
+    padding: 20px 25px; display: flex; justify-content: space-between;
+    align-items: center; border-bottom: 1px solid #e0e0e0;
+}
+.modal-header h3 { font-family: var(--font-title); font-weight: 400; color: var(--color-blue); font-size: 1.5rem; }
+.close-btn { background: none; border: none; font-size: 2rem; color: #999; cursor: pointer; line-height: 1; }
+.close-btn:hover { color: var(--color-text); }
+
+.modal-body { padding: 25px; }
+.user-info-box { background: #f8f9fa; border: 1px solid #e0e0e0; padding: 15px; border-radius: 8px; margin-bottom: 25px; }
+.box-label { font-size: 0.85rem; color: #666; margin-bottom: 10px; }
+.user-details { display: flex; align-items: center; gap: 15px; }
+.avatar-placeholder-small { width: 35px; height: 35px; border-radius: 50%; background-color: var(--color-blue); color: white; display: flex; justify-content: center; align-items: center; font-size: 1rem; font-family: var(--font-title); }
+.user-name { font-weight: bold; font-size: 0.95rem; }
+.user-email { color: #666; font-size: 0.85rem; }
+
+.code-box { border: 1px solid #e0e0e0; padding: 20px; border-radius: 8px; }
+.code-box h4 { font-size: 1rem; margin-bottom: 5px; color: var(--color-text); }
+.code-box p { font-size: 0.9rem; color: #666; margin-bottom: 15px; }
+.code-box input { width: 100%; padding: 12px; font-size: 1.1rem; border: 2px solid #ddd; border-radius: 6px; font-family: var(--font-text); transition: border-color 0.2s; }
+.code-box input:focus { border-color: var(--color-blue); outline: none; }
+
+.modal-footer { padding: 15px 25px; display: flex; justify-content: flex-end; gap: 10px; border-top: 1px solid #e0e0e0; background: #f8f9fa; }
+.cancel-btn { background: none; border: none; font-family: var(--font-text); font-weight: 600; color: #666; cursor: pointer; padding: 10px 15px; transition: color 0.2s; }
+.cancel-btn:hover { color: var(--color-text); }
+
+.join-btn { padding: 10px 20px; border-radius: 6px; font-family: var(--font-text); font-weight: bold; border: none; color: white; transition: background-color 0.2s; }
+.join-btn.disabled { background-color: #cccccc; cursor: not-allowed; }
+.join-btn.active { background-color: var(--color-blue); cursor: pointer; }
+.join-btn.active:hover { background-color: #003e66; }
+
+.join-btn.active-red { background-color: var(--color-red); cursor: pointer; }
+.join-btn.active-red:hover { background-color: #8a1311; }

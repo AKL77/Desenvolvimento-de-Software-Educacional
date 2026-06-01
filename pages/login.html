@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Não sei o nome - Login</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="../css/global.css">
+    <link rel="stylesheet" href="../css/auth.css">
+</head>
+<body class="bg-auth">
+
+    <div class="particles-bg">
+        <span class="particle p1">{ }</span>
+        <span class="particle p2">if()</span>
+        <span class="particle p3">for</span>
+        <span class="particle p4">[ ]</span>
+        <span class="particle p5">+=</span>
+        <span class="particle p6">0 1</span>
+        <span class="particle p7">//</span>
+        <span class="particle p8">→</span>
+    </div>
+
+    <main id="auth-container" class="container">
+        <section id="selection-screen" class="screen active">
+            <h1 class="app-title">Não sei o nome</h1>
+            <p class="subtitle">Aprenda lógica brincando!</p>
+            
+            <div class="cards-container">
+                <button class="profile-btn student-btn" onclick="showLogin('aluno')">
+                    <h2>Sou Aluno</h2>
+                    <p>Entrar na aventura</p>
+                </button>
+
+                <button class="profile-btn teacher-btn" onclick="showLogin('professor')">
+                    <h2>Sou Professor</h2>
+                    <p>Painel da turma</p>
+                </button>
+            </div>
+        </section>
+
+        <section id="login-screen" class="screen hidden">
+            <div class="login-header">
+                <button class="back-btn" onclick="showSelection()">Voltar</button>
+                <h1 class="app-title" id="login-title">Login</h1>
+                <div style="width: 60px;"></div> 
+            </div>
+
+            <div class="auth-tabs" id="auth-tabs">
+                <button type="button" class="tab-btn active" id="tab-login" onclick="switchAuthMode('login')">Entrar</button>
+                <button type="button" class="tab-btn" id="tab-register" onclick="switchAuthMode('register')">Criar Conta</button>
+            </div>
+            
+            <form id="login-form" onsubmit="handleLogin(event)">
+                
+                <div class="input-group register-only hidden-field">
+                    <label for="nome">Nome Completo</label>
+                    <input type="text" id="nome" placeholder="Seu nome completo">
+                </div>
+
+                <div class="input-group">
+                    <label for="email">E-mail</label>
+                    <input type="email" id="email" placeholder="Digite seu e-mail" required>
+                </div>
+                
+                <div class="input-group">
+                    <label for="password">Senha</label>
+                    <div class="password-wrapper">
+                        <input type="password" id="password" placeholder="Digite sua senha" required>
+                        <button type="button" class="toggle-password" onclick="togglePassword('password', this)" title="Mostrar/Ocultar senha">
+                            <svg class="eye-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                <circle cx="12" cy="12" r="3"></circle>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="login-actions" id="forgot-password-container">
+                    <a href="#" class="forgot-password">Esqueci minha senha</a>
+                </div>
+                
+                <button type="submit" class="submit-btn" id="submit-btn">Entrar</button>
+            </form>
+        </section>
+    </main>
+
+    <footer class="auth-footer">
+        Não sei o nome © 2026 · Ensino de Algoritmos e Lógica<br>
+        Universidade Federal de Santa Maria
+    </footer>
+
+    <script src="../js/auth.js"></script>
+</body>
+</html>

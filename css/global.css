@@ -1,0 +1,38 @@
+:root {
+    --color-blue: #005285;
+    --color-orange: #EE7D00;
+    --color-red: #AE1917;
+    --color-bg: #F4F7F6;
+    --color-text: #333333;
+    --color-white: #FFFFFF;
+    
+    --font-title: 'Fredoka', sans-serif;
+    --font-text: 'Nunito', sans-serif;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    font-family: var(--font-text);
+    color: var(--color-text);
+    min-height: 100vh;
+}
+
+.bg-auth {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: radial-gradient(circle at top left, #f0f7fb, #cce0f0);
+    padding: 20px;
+}
+
+.bg-dashboard {
+    background: #F8F9FA;
+    display: block;
+}
+
+.hidden { display: none !important; }
+
+/* Tipografia global */
+.app-title { font-family: var(--font-title); color: var(--color-blue); font-size: 3rem; margin-bottom: 5px; }
+.app-title-small { font-family: var(--font-title); color: var(--color-blue); font-size: 1.8rem; }

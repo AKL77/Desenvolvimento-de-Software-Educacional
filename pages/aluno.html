@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Não sei o nome - Painel do Aluno</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="../css/global.css">
+    <link rel="stylesheet" href="../css/dashboard.css">
+    <link rel="stylesheet" href="../css/modal.css">
+</head>
+<body class="bg-dashboard">
+
+    <section id="student-dashboard" class="dashboard-layout">
+        <header class="dashboard-header">
+            <div class="logo-area">
+                <span class="logo-icon">♦️</span>
+                <h2 class="app-title-small">Não sei o nome</h2>
+            </div>
+            <div class="header-actions">
+                <button class="join-class-btn" title="Participar de uma turma" onclick="openJoinModal()">+</button>
+                <div class="avatar-placeholder">A</div>
+            </div>
+        </header>
+
+        <main class="dashboard-content">
+            <div class="class-grid">
+                <div class="class-card theme-blue">
+                    <div class="class-card-header">
+                        <h3>Lógica e Robótica - 6º Ano A</h3>
+                        <p>Escola Municipal Esperança</p>
+                    </div>
+                    <div class="class-card-body">
+                        <p>Próxima missão em breve...</p>
+                    </div>
+                </div>
+
+                <div class="class-card theme-orange">
+                    <div class="class-card-header">
+                        <h3>Oficina de Jogos - 7º Ano B</h3>
+                        <p>Colégio Estadual Saber</p>
+                    </div>
+                    <div class="class-card-body">
+                        <p>1 algoritmo pendente</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <div id="join-modal" class="modal hidden">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Participar da turma</h3>
+                    <button class="close-btn" onclick="closeJoinModal()">&times;</button>
+                </div>
+                
+                <div class="modal-body">
+                    <div class="user-info-box">
+                        <p class="box-label">Você fez login como</p>
+                        <div class="user-details">
+                            <div class="avatar-placeholder-small">A</div>
+                            <div class="user-text">
+                                <p class="user-name">Aluno Aventureiro</p>
+                                <p class="user-email" id="display-user-email">email@exemplo.com</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="code-box">
+                        <h4>Código da turma</h4>
+                        <p>Peça para seu professor o código da turma e digite-o aqui.</p>
+                        <input type="text" id="class-code" placeholder="Código da turma" oninput="validateCodeInput()">
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button class="cancel-btn" onclick="closeJoinModal()">Cancelar</button>
+                    <button id="submit-code-btn" class="join-btn disabled" disabled>Participar</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script src="../js/student.js"></script>
+</body>
+</html>
