@@ -46,18 +46,19 @@ void Awake()
             Destroy(child.gameObject);
         lines.Clear();
 
+
         for (int i = 0; i < lineCount; i++)
-        {
-            GameObject lineObj = Instantiate(sequenceLinePrefab, sequenceContainer);
-DropZone dropZone = lineObj.GetComponent<DropZone>();
-if (dropZone == null)
 {
-    Debug.LogError("SequenceLine prefab is missing a DropZone component!");
-    return;
-}
-dropZone.Setup(i);
-lines.Add(dropZone);
-        }
+    GameObject lineObj = Instantiate(sequenceLinePrefab, sequenceContainer);
+    DropZone dropZone = lineObj.GetComponent<DropZone>();
+    if (dropZone == null)
+    {
+        Debug.LogError("No DropZone on SequenceLine!");
+        continue;
+    }
+    dropZone.Setup(i);
+    lines.Add(dropZone);
+
     }
     
     public List<CardData> GetSequence()
