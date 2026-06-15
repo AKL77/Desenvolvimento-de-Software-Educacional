@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 86ce9f1bb10af639c9025fdd92483f5f, type: 3}
+  m_Name: Card_Else
+  m_EditorClassIdentifier: Assembly-CSharp::CardData
+  cardId: else
+  displayName: "Se n\xE3o..."
+  cardType: 1
+  cardAction: 4
+  artwork: {fileID: 5189691121816951081, guid: 164a2867ba697430b880ec2443f96553, type: 3}
+  cardColor: {r: 0.7075472, g: 0.41051087, b: 0.41051087, a: 1}
+  repeatValue: 0
+  conditionTarget: 0
