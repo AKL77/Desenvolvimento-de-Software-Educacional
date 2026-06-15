@@ -60,6 +60,7 @@ void Awake()
     lines.Add(dropZone);
 
     }
+    }
     
     public List<CardData> GetSequence()
     {
