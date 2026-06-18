@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine.UI;
 
 public class SequenceManager : MonoBehaviour
 {
@@ -29,38 +30,40 @@ void Awake()
     }
 
     public void BuildSequence(int lineCount)
-    {
-    
-        if (sequenceContainer == null)
-        {
-            Debug.LogError("sequenceContainer is null on " + gameObject.name);
-            return;
-        }
-        if (sequenceLinePrefab == null)
-        {
-            Debug.LogError("sequenceLinePrefab is null on " + gameObject.name);
-            return;
-        }
-
-        foreach (Transform child in sequenceContainer)
-            Destroy(child.gameObject);
-        lines.Clear();
-
-
-        for (int i = 0; i < lineCount; i++)
 {
-    GameObject lineObj = Instantiate(sequenceLinePrefab, sequenceContainer);
-    DropZone dropZone = lineObj.GetComponent<DropZone>();
-    if (dropZone == null)
+    if (sequenceContainer == null)
     {
-        Debug.LogError("No DropZone on SequenceLine!");
-        continue;
+        Debug.LogError("sequenceContainer is null on " + gameObject.name);
+        return;
     }
-    dropZone.Setup(i);
-    lines.Add(dropZone);
+    if (sequenceLinePrefab == null)
+    {
+        Debug.LogError("sequenceLinePrefab is null on " + gameObject.name);
+        return;
+    }
 
+    foreach (Transform child in sequenceContainer)
+        Destroy(child.gameObject);
+    lines.Clear();
+
+    for (int i = 0; i < lineCount; i++)
+    {
+        GameObject lineObj = Instantiate(sequenceLinePrefab, sequenceContainer);
+        DropZone dropZone = lineObj.GetComponent<DropZone>();
+        if (dropZone == null)
+        {
+            Debug.LogError("No DropZone on SequenceLine!");
+            continue;
+        }
+        dropZone.Setup(i);
+        lines.Add(dropZone);
     }
-    }
+
+    // Force layout recalculation
+    LayoutRebuilder.ForceRebuildLayoutImmediate(
+        sequenceContainer.GetComponent<RectTransform>()
+    );
+}
     
     public List<CardData> GetSequence()
     {

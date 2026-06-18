@@ -39,34 +39,38 @@ public class DropZone : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPoin
     }
 
     public void OnDrop(PointerEventData eventData)
-    { 
-    Debug.Log("OnDrop called on: " + gameObject.name);
+{
+    // Clean up any active ghost immediately
+    CardView.CleanupGhost();
+
     CardView draggedCard = eventData.pointerDrag?.GetComponent<CardView>();
-    Debug.Log("Dragged card: " + (draggedCard == null ? "NULL" : draggedCard.cardData.displayName));
     if (draggedCard == null) return;
 
-        // If dragged from another drop zone, handle the swap
-        if (draggedCard.isPlacedCard && draggedCard.parentDropZone != null)
-        {
-            DropZone sourceZone = draggedCard.parentDropZone;
+    if (draggedCard.isPlacedCard && draggedCard.parentDropZone != null)
+    {
+        DropZone sourceZone = draggedCard.parentDropZone;
+        if (sourceZone == this) return;
 
-            if (sourceZone == this) return; // dropped on itself, do nothing
-
-            // Swap: put this zone's card into the source zone
-            if (placedCard != null)
-                sourceZone.PlaceCard(placedCard);
-            else
-                sourceZone.ClearCard();
-        }
-
-        // Place the dragged card here
-        PlaceCard(draggedCard.cardData);
+        if (placedCard != null)
+            sourceZone.PlaceCard(placedCard);
+        else
+            sourceZone.ClearCard();
     }
+
+    PlaceCard(draggedCard.cardData);
+}
 
 public void PlaceCard(CardData data)
 {
+    // Don't destroy immediately if it's being dragged
     if (placedCardObject != null)
-        Destroy(placedCardObject);
+    {
+        CardView existingView = placedCardObject.GetComponent<CardView>();
+        if (existingView != null && existingView.isDragging)
+            existingView.destroyOnDragEnd = true;
+        else
+            Destroy(placedCardObject);
+    }
 
     placedCard = data;
 
@@ -77,8 +81,8 @@ public void PlaceCard(CardData data)
     rect.anchorMin = new Vector2(0, 0.5f);
     rect.anchorMax = new Vector2(0, 0.5f);
     rect.pivot = new Vector2(0, 0.5f);
-    rect.anchoredPosition = new Vector2(50, 0); // offset from left, past the number
-    rect.sizeDelta = new Vector2(100, 100);
+    rect.anchoredPosition = new Vector2(50, 0);
+rect.sizeDelta = new Vector2(150, 180);
 
     CardView cardView = placedCardObject.GetComponent<CardView>();
     cardView.Setup(data);

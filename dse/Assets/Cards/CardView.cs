@@ -17,10 +17,15 @@ public class CardView : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
     // is this card inside a DropZone (placed) or in the hand?
     [HideInInspector] public bool isPlacedCard = false;
     [HideInInspector] public DropZone parentDropZone = null;
+    [HideInInspector] public bool isDragging = false;
+    [HideInInspector] public bool destroyOnDragEnd = false;
 
     private Canvas rootCanvas;
     private GameObject ghostCard;
     private CanvasGroup ghostCanvasGroup;
+    
+    // Static reference so it can be cleaned up even if the card is destroyed
+    private static GameObject activeGhost;
 
     void Awake()
     {
@@ -76,14 +81,19 @@ public class CardView : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
 
 public void OnBeginDrag(PointerEventData eventData)
 {
+    isDragging = true;
+
+    // Clean up any leftover ghost from a previous drag
+    if (activeGhost != null)
+        Destroy(activeGhost);
+
     rootCanvas = GetComponentInParent<Canvas>();
     ghostCard = Instantiate(gameObject, rootCanvas.transform);
+    activeGhost = ghostCard;
 
-    // Remove CardView only, keep everything else
     CardView ghostView = ghostCard.GetComponent<CardView>();
     if (ghostView != null) Destroy(ghostView);
 
-    // Get existing CanvasGroup or add one
     ghostCanvasGroup = ghostCard.GetComponent<CanvasGroup>();
     if (ghostCanvasGroup == null)
         ghostCanvasGroup = ghostCard.AddComponent<CanvasGroup>();
@@ -95,37 +105,54 @@ public void OnBeginDrag(PointerEventData eventData)
     ghostRect.anchorMin = new Vector2(0.5f, 0.5f);
     ghostRect.anchorMax = new Vector2(0.5f, 0.5f);
     ghostRect.pivot = new Vector2(0.5f, 0.5f);
-    ghostRect.sizeDelta = new Vector2(100, 100);
+ghostRect.sizeDelta = new Vector2(150, 180);
 }
 
-    public void OnDrag(PointerEventData eventData)
+public void OnDrag(PointerEventData eventData)
+{
+    if (ghostCard == null) return;
+
+    RectTransformUtility.ScreenPointToLocalPointInRectangle(
+        rootCanvas.GetComponent<RectTransform>(),
+        eventData.position,
+        rootCanvas.renderMode == RenderMode.ScreenSpaceOverlay ? null : rootCanvas.worldCamera,
+        out Vector2 localPoint
+    );
+
+    ghostCard.GetComponent<RectTransform>().localPosition = localPoint;
+}
+
+public void OnEndDrag(PointerEventData eventData)
+{
+    isDragging = false;
+
+    // Destroy via static reference in case this object was destroyed
+    if (activeGhost != null)
     {
-        if (ghostCard == null) return;
-
-        RectTransformUtility.ScreenPointToLocalPointInRectangle(
-            rootCanvas.GetComponent<RectTransform>(),
-            eventData.position,
-            rootCanvas.renderMode == RenderMode.ScreenSpaceOverlay ? null : rootCanvas.worldCamera,
-            out Vector2 localPoint
-        );
-
-        ghostCard.GetComponent<RectTransform>().localPosition = localPoint;
+        Destroy(activeGhost);
+        activeGhost = null;
     }
 
-    public void OnEndDrag(PointerEventData eventData)
+    ghostCard = null;
+
+    if (destroyOnDragEnd)
+        Destroy(gameObject);
+
+    if (isPlacedCard && parentDropZone != null)
     {
-        if (ghostCard != null)
-            Destroy(ghostCard);
-
-        // If this was a placed card and it wasn't dropped on a new zone,
-        // check if it was dropped outside — if so clear its slot
-        if (isPlacedCard && parentDropZone != null)
-        {
-            DropZone targetZone = eventData.pointerCurrentRaycast.gameObject?
-                .GetComponentInParent<DropZone>();
-
-            if (targetZone == null)
-                parentDropZone.ClearCard();
-        }
+        DropZone targetZone = eventData.pointerCurrentRaycast.gameObject?
+            .GetComponentInParent<DropZone>();
+        if (targetZone == null)
+            parentDropZone.ClearCard();
     }
+}
+
+public static void CleanupGhost()
+{
+    if (activeGhost != null)
+    {
+        Destroy(activeGhost);
+        activeGhost = null;
+    }
+}
 }

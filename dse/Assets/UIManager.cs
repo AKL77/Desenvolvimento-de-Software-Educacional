@@ -12,7 +12,7 @@ public class UIManager : MonoBehaviour
     public Button mapButton; // assign in Inspector
 
     [Header("Map compact layout")]
-public Vector2 compactAnchorMin = new Vector2(0.41f, 0.25f);
+public Vector2 compactAnchorMin = new Vector2(0.45f, 0.45f);
 public Vector2 compactAnchorMax = new Vector2(1f, 1f);
 
     private bool isCompact = false;
@@ -36,6 +36,7 @@ public void SwitchToCompact()
 
     mapPanel.DOAnchorMin(compactAnchorMin, 0.4f).SetEase(Ease.OutCubic);
     mapPanel.DOAnchorMax(compactAnchorMax, 0.4f).SetEase(Ease.OutCubic);
+mapPanel.offsetMax = new Vector2(0, -20); // top and right padding
 
     DOVirtual.DelayedCall(0.4f, () => {
         mapButton.interactable = true;
