@@ -5,13 +5,13 @@ using UnityEngine.SceneManagement;
 using UnityEngine.InputSystem.UI;
 
 /// <summary>
-/// Monta a tela inicial do jogo (mapa medieval + personagens + título + botão)
-/// em tempo de execução. Toda a arte vem de sprites em Resources/MainMenu/,
-/// compostos a partir dos pacotes Kenney (medieval-rts e toon-characters).
+/// Monta a tela inicial do jogo em tempo de execução: imagem de fundo (castelo),
+/// placa de título e botão emoldurado no estilo pixel-art (pacote Kenney UI),
+/// tudo posicionado à esquerda para emoldurar a arte do castelo.
 ///
-/// O layout usa a resolução de referência 1920x1080 (mesma do mockup), então as
-/// coordenadas abaixo correspondem 1:1 à arte. Basta colocar este componente em
-/// um GameObject de uma cena vazia.
+/// A arte vem de sprites em Resources/MainMenu/. Layout na resolução de
+/// referência 1920x1080 (mesma do mockup). Basta colocar este componente em um
+/// GameObject de uma cena vazia.
 /// </summary>
 public class MainMenuBootstrap : MonoBehaviour
 {
@@ -39,7 +39,7 @@ public class MainMenuBootstrap : MonoBehaviour
         camGo.tag = "MainCamera";
         var cam = camGo.AddComponent<Camera>();
         cam.clearFlags = CameraClearFlags.SolidColor;
-        cam.backgroundColor = new Color(0.15f, 0.68f, 0.38f); // verde grama
+        cam.backgroundColor = new Color(0.10f, 0.12f, 0.18f);
         cam.orthographic = true;
     }
 
@@ -53,7 +53,6 @@ public class MainMenuBootstrap : MonoBehaviour
 
     void BuildUI()
     {
-        // ---- Canvas raiz ----
         var canvasGo = new GameObject("MenuCanvas",
             typeof(Canvas), typeof(CanvasScaler), typeof(GraphicRaycaster));
         var canvas = canvasGo.GetComponent<Canvas>();
@@ -66,19 +65,12 @@ public class MainMenuBootstrap : MonoBehaviour
 
         var root = canvasGo.transform;
 
-        // ---- Camadas (de trás para frente) ----
-        AddStretched("map", root);          // mapa de fundo
-        AddStretched("vignette", root);     // escurecimento p/ contraste do texto
+        // Fundo do castelo (cobre a tela preservando proporção)
+        AddBackground("menu_bg", root);
 
-        // personagens (apoiados na base da tela)
-        AddSpriteBottom("hero_left", 455f, 1058f, 470f, root);
-        AddSpriteBottom("hero_right", 1470f, 1052f, 470f, root);
-
-        // título e subtítulo
-        AddSprite("title", 960f, 225f, root);
-        AddSprite("subtitle", 960f, 450f, root);
-
-        // botão
+        // Coluna de UI à esquerda, sobre o céu/floresta
+        AddSprite("title", 560f, 250f, root);
+        AddSprite("subtitle", 560f, 430f, root);
         BuildPlayButton(root);
     }
 
@@ -87,20 +79,18 @@ public class MainMenuBootstrap : MonoBehaviour
         _btnNormal = Resources.Load<Sprite>(Dir + "button_normal");
         _btnHover = Resources.Load<Sprite>(Dir + "button_hover");
 
-        var img = AddSprite("button_normal", 960f, 670f, parent);
+        var img = AddSprite("button_normal", 560f, 600f, parent);
         img.raycastTarget = true;
 
         var btn = img.gameObject.AddComponent<Button>();
         btn.targetGraphic = img;
         btn.transition = Selectable.Transition.SpriteSwap;
-        var state = new SpriteState
+        btn.spriteState = new SpriteState
         {
             highlightedSprite = _btnHover,
             pressedSprite = _btnHover,
             selectedSprite = _btnHover
         };
-        btn.spriteState = state;
-
         btn.onClick.AddListener(OnPlayClicked);
     }
 
@@ -115,47 +105,33 @@ public class MainMenuBootstrap : MonoBehaviour
 
     // ---------- Helpers ----------
 
-    /// Cria uma Image a partir de um sprite, centrada em (cx,cy) no espaço 1920x1080,
-    /// com o tamanho nativo do sprite.
+    /// Fundo que cobre toda a tela mantendo a proporção da imagem (recorta o excesso).
+    Image AddBackground(string res, Transform parent)
+    {
+        var sp = Resources.Load<Sprite>(Dir + res);
+        var img = NewImage(res, parent);
+        img.sprite = sp;
+        img.preserveAspect = true;
+
+        var rt = img.rectTransform;
+        rt.anchorMin = rt.anchorMax = rt.pivot = new Vector2(0.5f, 0.5f);
+
+        var fitter = img.gameObject.AddComponent<AspectRatioFitter>();
+        fitter.aspectMode = AspectRatioFitter.AspectMode.EnvelopeParent;
+        fitter.aspectRatio = (sp != null) ? sp.rect.width / sp.rect.height : 16f / 9f;
+        return img;
+    }
+
+    /// Image centrada em (cx,cy) no espaço 1920x1080, com o tamanho nativo do sprite.
     Image AddSprite(string res, float cx, float cy, Transform parent)
     {
         var sp = Resources.Load<Sprite>(Dir + res);
         var img = NewImage(res, parent);
         img.sprite = sp;
         var rt = img.rectTransform;
-        Center(rt);
+        rt.anchorMin = rt.anchorMax = rt.pivot = new Vector2(0.5f, 0.5f);
         if (sp != null) rt.sizeDelta = new Vector2(sp.rect.width, sp.rect.height);
         rt.anchoredPosition = new Vector2(cx - RefW * 0.5f, RefH * 0.5f - cy);
-        return img;
-    }
-
-    /// Cria uma Image apoiada pela base: centro horizontal cx, base em bottomY,
-    /// altura fixa (largura proporcional ao sprite).
-    Image AddSpriteBottom(string res, float cx, float bottomY, float height, Transform parent)
-    {
-        var sp = Resources.Load<Sprite>(Dir + res);
-        var img = NewImage(res, parent);
-        img.sprite = sp;
-        var rt = img.rectTransform;
-        Center(rt);
-        float w = (sp != null) ? sp.rect.width * height / sp.rect.height : height;
-        rt.sizeDelta = new Vector2(w, height);
-        float cy = bottomY - height * 0.5f;
-        rt.anchoredPosition = new Vector2(cx - RefW * 0.5f, RefH * 0.5f - cy);
-        return img;
-    }
-
-    /// Image esticada para cobrir toda a tela.
-    Image AddStretched(string res, Transform parent)
-    {
-        var sp = Resources.Load<Sprite>(Dir + res);
-        var img = NewImage(res, parent);
-        img.sprite = sp;
-        var rt = img.rectTransform;
-        rt.anchorMin = Vector2.zero;
-        rt.anchorMax = Vector2.one;
-        rt.offsetMin = Vector2.zero;
-        rt.offsetMax = Vector2.zero;
         return img;
     }
 
@@ -166,10 +142,5 @@ public class MainMenuBootstrap : MonoBehaviour
         var img = go.GetComponent<Image>();
         img.raycastTarget = false;
         return img;
-    }
-
-    static void Center(RectTransform rt)
-    {
-        rt.anchorMin = rt.anchorMax = rt.pivot = new Vector2(0.5f, 0.5f);
     }
 }
