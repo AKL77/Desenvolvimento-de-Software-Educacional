@@ -2,6 +2,8 @@ using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.UI;
 
+
+
 public class PhaseManager : MonoBehaviour
 {
     public static PhaseManager Instance;
@@ -12,6 +14,8 @@ public class PhaseManager : MonoBehaviour
     [Header("References")]
     public Transform cardsContainer;    // the scroll content inside CardsPanel
     public GameObject cardSlotPrefab;
+    [Header("Carousel")]
+public CardCarousel cardCarousel;
 
 void Awake()
 {
@@ -26,26 +30,33 @@ void Start()
 }
 public void LoadPhase(PhaseData phase)
 {
-    Debug.Log($"Loading phase: {phase.phaseName}, cards: {phase.availableCards.Count}, cardsContainer null: {cardsContainer == null}");
-    // rest of your code
+    currentPhase = phase;
 
-    
-        currentPhase = phase;
+    foreach (Transform child in cardsContainer)
+        Destroy(child.gameObject);
 
-        // Clear existing cards in the hand
-        foreach (Transform child in cardsContainer)
-            Destroy(child.gameObject);
+    float cardWidth = 150f;
+    float spacing = 10f;
 
-        // Spawn one card slot per available card
-        foreach (CardData card in phase.availableCards)
-        {
-            GameObject cardObj = Instantiate(cardSlotPrefab, cardsContainer);
-            CardView cardView = cardObj.GetComponent<CardView>();
-            cardView.Setup(card);
-        }
+    for (int i = 0; i < phase.availableCards.Count; i++)
+    {
+        GameObject cardObj = Instantiate(cardSlotPrefab, cardsContainer);
+        CardView cardView = cardObj.GetComponent<CardView>();
+        cardView.Setup(phase.availableCards[i]);
 
-        // Reset the sequence for the new phase
-        SequenceManager.Instance.ClearSequence();
-        SequenceManager.Instance.BuildSequence(phase.lineCount);
+        RectTransform rect = cardObj.GetComponent<RectTransform>();
+        rect.anchorMin = new Vector2(0, 0.5f);
+        rect.anchorMax = new Vector2(0, 0.5f);
+        rect.pivot = new Vector2(0, 0.5f);
+        rect.anchoredPosition = new Vector2(i * (cardWidth + spacing), 0);
+        rect.sizeDelta = new Vector2(cardWidth, 180f);
     }
+
+    Debug.Log("Carousel found: " + (cardCarousel != null) + ", card count: " + phase.availableCards.Count);
+    if (cardCarousel != null)
+        cardCarousel.Refresh(phase.availableCards.Count);
+
+    SequenceManager.Instance.ClearSequence();
+    SequenceManager.Instance.BuildSequence(phase.lineCount);
+}
 }
