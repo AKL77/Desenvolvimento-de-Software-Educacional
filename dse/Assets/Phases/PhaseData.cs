@@ -13,4 +13,7 @@ public class PhaseData : ScriptableObject
 
     [Header("Available Cards")]
     public List<CardData> availableCards;
+
+    [Header("Grid")]
+    public GridLevelData gridLevel;
 }
