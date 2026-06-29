@@ -156,12 +156,11 @@ public class SequenceExecutor : MonoBehaviour
 
     bool EvaluateCondition(ConditionTarget condition)
     {
-        // in mock mode IsWalkable always returns true
-        // so WallAhead is always false and PathClear is always true
+        Vector2Int ahead = character.GetPositionAhead();
         return condition switch
         {
-            ConditionTarget.WallAhead => !character.IsWalkable(Vector2Int.zero), // mock always false
-            ConditionTarget.PathClear =>  character.IsWalkable(Vector2Int.zero), // mock always true
+            ConditionTarget.WallAhead => !character.IsWalkable(ahead),
+            ConditionTarget.PathClear =>  character.IsWalkable(ahead),
             _ => false
         };
     }
@@ -217,7 +216,9 @@ public class SequenceExecutor : MonoBehaviour
     {
         isRunning = false;
         Debug.Log("SUCCESS — goal reached!");
-        VictoryPanel.Instance?.Show();
+        PhaseManager pm = PhaseManager.Instance;
+        Debug.Log($"[SequenceExecutor] OnSuccess — PhaseManager.Instance.ID={(pm != null ? pm.GetInstanceID().ToString() : "NULL")}, currentPhase={(pm != null && pm.currentPhase != null ? pm.currentPhase.phaseName : "NULL")}");
+        VictoryPanel.Instance?.Show(pm != null ? pm.currentPhase : null);
     }
 
     void OnFailure()

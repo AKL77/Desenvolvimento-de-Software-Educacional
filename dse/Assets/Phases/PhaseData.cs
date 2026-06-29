@@ -16,4 +16,7 @@ public class PhaseData : ScriptableObject
 
     [Header("Grid")]
     public GridLevelData gridLevel;
+
+    [Header("Progression")]
+    public PhaseData nextPhase;
 }

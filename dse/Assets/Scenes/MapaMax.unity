@@ -562,9 +562,9 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1832717534}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0.5}
-  m_AnchorMax: {x: 0, y: 0.5}
-  m_AnchoredPosition: {x: -161.80008, y: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: -556.80005, y: 0}
   m_SizeDelta: {x: 2000, y: 400}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!1 &482234961
@@ -1336,6 +1336,7 @@ MonoBehaviour:
   cardsContainer: {fileID: 434147745}
   cardSlotPrefab: {fileID: 2247743951481300807, guid: dbe5cda459c4f72608ae384f00d977ea, type: 3}
   cardCarousel: {fileID: 1453492397}
+  gridVisualizer: {fileID: 0}
 --- !u!114 &843421323
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2069,6 +2070,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 843421319}
     m_Modifications:
+    - target: {fileID: 9001000000000010, guid: 3610eee12e0c6f64fb8b66467a217566, type: 3}
+      propertyPath: m_TextStyleHashCode
+      value: -1183493901
+      objectReference: {fileID: 0}
     - target: {fileID: 1313517759791704604, guid: 3610eee12e0c6f64fb8b66467a217566, type: 3}
       propertyPath: m_TextStyleHashCode
       value: -1183493901
@@ -3230,6 +3235,7 @@ GameObject:
   - component: {fileID: 1820284100}
   - component: {fileID: 1820284099}
   - component: {fileID: 1820284101}
+  - component: {fileID: 1820284102}
   m_Layer: 5
   m_Name: SidePanel
   m_TagString: Untagged
@@ -3321,6 +3327,23 @@ MonoBehaviour:
   - 1
   - 0.75
   - 0.5
+--- !u!114 &1820284102
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1820284097}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a6e55bcc725033a6caaa750471389b3f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PhaseManager
+  currentPhase: {fileID: 0}
+  cardsContainer: {fileID: 0}
+  cardSlotPrefab: {fileID: 0}
+  cardCarousel: {fileID: 0}
+  gridVisualizer: {fileID: 0}
 --- !u!1 &1832717533
 GameObject:
   m_ObjectHideFlags: 0
@@ -3373,7 +3396,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.42, g: 0.27, b: 0.04, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -3405,7 +3428,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1832717533}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3312d7739989d2b4e91e6319e9a96d76, type: 3}
   m_Name: 
