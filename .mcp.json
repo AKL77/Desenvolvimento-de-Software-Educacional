@@ -1,0 +1,10 @@
+{
+  "mcpServers": {
+    "mcp-unity": {
+      "command": "node",
+      "args": [
+        "C:/Users/antoniotolio/Documents/facu-docs/dse/Desenvolvimento-de-Software-Educacional/dse/Library/PackageCache/com.gamelovers.mcp-unity@cce8b57de9cb/Server~/build/index.js"
+      ]
+    }
+  }
+}

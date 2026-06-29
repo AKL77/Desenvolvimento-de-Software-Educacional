@@ -30,18 +30,30 @@ public class CardView : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
     void Awake()
     {
         rootCanvas = GetComponentInParent<Canvas>();
+        Debug.Log($"[CardView] Awake on '{gameObject.name}' — rootCanvas={(rootCanvas != null ? rootCanvas.name : "NULL")}, cardData={(cardData != null ? cardData.displayName : "NULL")}");
         RefreshVisuals();
     }
 
     public void Setup(CardData data)
     {
+        Debug.Log($"[CardView] Setup('{(data != null ? data.displayName : "NULL")}') called on '{gameObject.name}'");
         cardData = data;
         RefreshVisuals();
     }
 
     void RefreshVisuals()
 {
-    if (cardData == null) return;
+    if (cardData == null)
+    {
+        Debug.LogWarning($"[CardView] RefreshVisuals on '{gameObject.name}' aborted — cardData is NULL");
+        return;
+    }
+
+    Debug.Log($"[CardView] RefreshVisuals '{cardData.displayName}' on '{gameObject.name}' — " +
+        $"cardBackground={(cardBackground != null ? "OK" : "NULL")} " +
+        $"(active={(cardBackground != null ? cardBackground.gameObject.activeInHierarchy.ToString() : "n/a")}, " +
+        $"sprite={(cardBackground != null ? (cardBackground.sprite != null ? cardBackground.sprite.name : "NULL") : "n/a")}), " +
+        $"color={cardData.cardColor}, selfActive={gameObject.activeInHierarchy}, parent={transform.parent?.name}");
 
     // Apply color to background
     if (cardBackground != null)

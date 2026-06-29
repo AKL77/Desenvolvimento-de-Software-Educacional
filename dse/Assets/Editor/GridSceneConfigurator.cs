@@ -91,6 +91,14 @@ public static class GridSceneConfigurator
         seqExec.stepDelay          = 0.4f;
         EditorUtility.SetDirty(seqExecutorGO);
 
+        // ── PhaseManager → point to GridVisualizer (dynamic grid swap per phase) ──
+        var phaseManager = GameObject.FindObjectOfType<PhaseManager>();
+        if (phaseManager != null)
+        {
+            phaseManager.gridVisualizer = visualizer;
+            EditorUtility.SetDirty(phaseManager.gameObject);
+        }
+
         // ── VictoryPanel on Canvas ───────────────────────────────────
         var existingVP = canvas.GetComponentInChildren<VictoryPanel>(true);
         if (existingVP == null)

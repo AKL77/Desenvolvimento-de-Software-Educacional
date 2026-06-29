@@ -32,6 +32,17 @@ public void SwitchToCompact()
     DOVirtual.DelayedCall(0.2f, () => {
         sidePanel.SetActive(true);
         cardsPanel.SetActive(true);
+
+        // The cards inside CardsPanel are instantiated while the panel is still
+        // inactive (PhaseManager.LoadPhase runs on Start, before this). A
+        // RectMask2D (on CardsPanel/Viewport) computed while inactive can end up
+        // with a stale/invalid clip rect that never gets recalculated, leaving
+        // every child permanently invisible even once active. Forcing a layout +
+        // canvas rebuild right after activation fixes that stale clip state.
+        Canvas.ForceUpdateCanvases();
+        RectTransform cardsRect = cardsPanel.GetComponent<RectTransform>();
+        if (cardsRect != null)
+            LayoutRebuilder.ForceRebuildLayoutImmediate(cardsRect);
     });
 
     mapPanel.DOAnchorMin(compactAnchorMin, 0.4f).SetEase(Ease.OutCubic);
