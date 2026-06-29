@@ -9,4 +9,5 @@ public interface IGridCharacter
     void ResetToStart();
     bool IsWalkable(Vector2Int pos);
     bool IsGoal(Vector2Int pos);
+    Vector2Int GetPositionAhead();
 }

@@ -46,6 +46,7 @@ public class CardData : ScriptableObject
     [Header("Visuals")]
     public Sprite artwork;
     public Color cardColor = Color.white;
+    [TextArea] public string description;
 
     [Header("Loop only")]
     public int repeatValue = 2;

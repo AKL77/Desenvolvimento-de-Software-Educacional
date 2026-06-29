@@ -72,6 +72,8 @@ public class MockGridCharacter : MonoBehaviour, IGridCharacter
         return pos == goalPosition;
     }
 
+    public Vector2Int GetPositionAhead() => gridPosition + FacingToVector();
+
     Vector2Int FacingToVector()
     {
         return facing switch

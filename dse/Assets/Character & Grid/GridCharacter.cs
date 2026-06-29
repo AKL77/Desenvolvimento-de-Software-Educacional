@@ -109,6 +109,8 @@ public class GridCharacter : MonoBehaviour, IGridCharacter
 
     public bool IsGoal(Vector2Int pos) => pos == levelData.goalPosition;
 
+    public Vector2Int GetPositionAhead() => _position + FacingToVector(_facing);
+
     // ── Helpers ─────────────────────────────────────────────────────
 
     static Vector2Int FacingToVector(FacingDirection f) => f switch

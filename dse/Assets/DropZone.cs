@@ -82,7 +82,7 @@ public void PlaceCard(CardData data)
     rect.anchorMax = new Vector2(0, 0.5f);
     rect.pivot = new Vector2(0, 0.5f);
     rect.anchoredPosition = new Vector2(50, 0);
-rect.sizeDelta = new Vector2(150, 180);
+rect.sizeDelta = new Vector2(160, 210);
 
     CardView cardView = placedCardObject.GetComponent<CardView>();
     cardView.Setup(data);
