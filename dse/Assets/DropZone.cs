@@ -14,10 +14,18 @@ public class DropZone : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPoin
     public Color highlightColor = new Color(1f, 1f, 1f, 0.3f);
     public Color occupiedColor = new Color(1f, 1f, 1f, 0.05f);
 
+    [Header("Bloco (laço)")]
+    public Color blockTintColor = new Color(0.35f, 0.55f, 1f, 0.14f);
+
     [HideInInspector] public int lineIndex;
     [HideInInspector] public CardData placedCard = null;
 
     private GameObject placedCardObject = null;
+
+    // Profundidade do bloco (0 = topo). Cada nível desloca a carta para a direita.
+    private const float BaseCardX = 50f;
+    private const float IndentPerLevel = 34f;
+    private int blockDepth = 0;
 
     public void Setup(int index)
     {
@@ -81,7 +89,7 @@ public void PlaceCard(CardData data)
     rect.anchorMin = new Vector2(0, 0.5f);
     rect.anchorMax = new Vector2(0, 0.5f);
     rect.pivot = new Vector2(0, 0.5f);
-    rect.anchoredPosition = new Vector2(50, 0);
+    rect.anchoredPosition = new Vector2(BaseCardX + blockDepth * IndentPerLevel, 0);
 rect.sizeDelta = new Vector2(160, 210);
 
     CardView cardView = placedCardObject.GetComponent<CardView>();
@@ -90,7 +98,24 @@ rect.sizeDelta = new Vector2(160, 210);
     cardView.parentDropZone = this;
 
     UpdateVisuals();
+
+    // A carta colocada pode abrir/fechar um bloco — recalcula a indentação de todas as linhas.
+    if (SequenceManager.Instance != null)
+        SequenceManager.Instance.RefreshBlocks();
 }
+
+    // Ajustado pelo SequenceManager.RefreshBlocks(): indenta a carta e tinge a linha quando
+    // está dentro de um laço.
+    public void SetBlockDepth(int depth)
+    {
+        blockDepth = depth;
+        if (placedCardObject != null)
+        {
+            RectTransform rect = placedCardObject.GetComponent<RectTransform>();
+            rect.anchoredPosition = new Vector2(BaseCardX + blockDepth * IndentPerLevel, 0);
+        }
+        UpdateVisuals();
+    }
 
     public void ClearCard()
     {
@@ -100,11 +125,19 @@ rect.sizeDelta = new Vector2(160, 210);
         placedCard = null;
         placedCardObject = null;
         UpdateVisuals();
+
+        // Remover uma carta pode fechar um bloco — recalcula a indentação das demais linhas.
+        if (SequenceManager.Instance != null)
+            SequenceManager.Instance.RefreshBlocks();
     }
 
     void UpdateVisuals()
     {
         if (backgroundImage == null) return;
-        backgroundImage.color = placedCard != null ? occupiedColor : emptyColor;
+        // Linhas dentro de um laço (depth > 0) ganham uma faixa colorida para parecer um bloco.
+        if (blockDepth > 0)
+            backgroundImage.color = blockTintColor;
+        else
+            backgroundImage.color = placedCard != null ? occupiedColor : emptyColor;
     }
 }

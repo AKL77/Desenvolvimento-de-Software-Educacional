@@ -15,6 +15,9 @@ public class SequenceExecutor : MonoBehaviour
 
     private IGridCharacter character;
     private bool isRunning = false;
+    // Sinaliza que o objetivo foi atingido. Como o corpo dos laços roda de forma recursiva,
+    // a detecção precisa ser global — quem decide sucesso/fracasso é só o nível-topo.
+    private bool goalReached = false;
 
     void Awake()
     {
@@ -41,16 +44,34 @@ public class SequenceExecutor : MonoBehaviour
             return;
         }
 
-        StartCoroutine(ExecuteSequence(sequence));
+        StartCoroutine(ExecuteTopLevel(sequence));
     }
 
-    IEnumerator ExecuteSequence(List<CardData> sequence)
+    // Nível-topo: roda as cartas uma vez e decide sucesso/fracasso. Só aqui OnSuccess/OnFailure
+    // são chamados — RunCards (recursivo) nunca os chama, para não resetar o personagem nem
+    // mostrar vitória no meio de um laço.
+    IEnumerator ExecuteTopLevel(List<CardData> sequence)
     {
         isRunning = true;
+        goalReached = false;
+
+        yield return StartCoroutine(RunCards(sequence));
+
+        isRunning = false;
+        if (goalReached)
+            OnSuccess();
+        else
+            OnFailure();
+    }
+
+    IEnumerator RunCards(List<CardData> sequence)
+    {
         int i = 0;
 
         while (i < sequence.Count)
         {
+            if (goalReached) yield break;
+
             CardData card = sequence[i];
             Debug.Log($"Executing card {i}: {card.displayName}");
 
@@ -75,8 +96,8 @@ public class SequenceExecutor : MonoBehaviour
                     break;
 
                 case CardAction.If:
-                    bool conditionMet = EvaluateCondition(card.conditionTarget);
-                    Debug.Log($"If {card.conditionTarget} → {conditionMet}");
+                    bool conditionMet = EvaluateCondition(card);
+                    Debug.Log($"If {card.conditionTarget} (negate={card.negateCondition}) → {conditionMet}");
                     if (!conditionMet)
                         i = SkipToElseOrEndIf(sequence, i + 1);
                     else
@@ -105,8 +126,9 @@ public class SequenceExecutor : MonoBehaviour
                     {
                         Debug.Log($"Repeat iteration {rep + 1}/{card.repeatValue}");
                         yield return StartCoroutine(
-                            ExecuteSequence(sequence.GetRange(i + 1, endRepeatIdx - i - 1))
+                            RunCards(sequence.GetRange(i + 1, endRepeatIdx - i - 1))
                         );
+                        if (goalReached) break;
                     }
                     i = endRepeatIdx + 1;
                     break;
@@ -122,16 +144,41 @@ public class SequenceExecutor : MonoBehaviour
                     int safetyLimit = 100;
                     int loopCount = 0;
                     Debug.Log($"RepeatUntil {card.conditionTarget}");
-                    while (!EvaluateCondition(card.conditionTarget) && loopCount < safetyLimit)
+                    // Para quando a condição vira verdadeira OU o corpo atinge o objetivo.
+                    while (!goalReached && !EvaluateCondition(card) && loopCount < safetyLimit)
                     {
                         yield return StartCoroutine(
-                            ExecuteSequence(sequence.GetRange(i + 1, endUntilIdx - i - 1))
+                            RunCards(sequence.GetRange(i + 1, endUntilIdx - i - 1))
                         );
                         loopCount++;
                     }
                     if (loopCount >= safetyLimit)
                         Debug.LogWarning("RepeatUntil hit safety limit of 100 iterations");
                     i = endUntilIdx + 1;
+                    break;
+
+                case CardAction.While:
+                    int endWhileIdx = FindEndRepeat(sequence, i + 1);
+                    if (endWhileIdx == -1)
+                    {
+                        Debug.LogWarning("While card has no matching EndRepeat");
+                        i++;
+                        break;
+                    }
+                    int whileSafety = 100;
+                    int whileLoops = 0;
+                    Debug.Log($"While {card.conditionTarget} (negate={card.negateCondition})");
+                    // Laço positivo: roda enquanto a condição for verdadeira; para ao vencer.
+                    while (!goalReached && EvaluateCondition(card) && whileLoops < whileSafety)
+                    {
+                        yield return StartCoroutine(
+                            RunCards(sequence.GetRange(i + 1, endWhileIdx - i - 1))
+                        );
+                        whileLoops++;
+                    }
+                    if (whileLoops >= whileSafety)
+                        Debug.LogWarning("While hit safety limit of 100 iterations");
+                    i = endWhileIdx + 1;
                     break;
 
                 case CardAction.EndRepeat:
@@ -146,23 +193,24 @@ public class SequenceExecutor : MonoBehaviour
             // check goal after every step
             if (character.IsAtGoal())
             {
-                OnSuccess();
+                goalReached = true;
                 yield break;
             }
         }
-
-        OnFailure();
     }
 
-    bool EvaluateCondition(ConditionTarget condition)
+    bool EvaluateCondition(CardData card)
     {
         Vector2Int ahead = character.GetPositionAhead();
-        return condition switch
+        bool result = card.conditionTarget switch
         {
             ConditionTarget.WallAhead => !character.IsWalkable(ahead),
             ConditionTarget.PathClear =>  character.IsWalkable(ahead),
+            ConditionTarget.AtGoal    =>  character.IsAtGoal(),
+            ConditionTarget.EnemyAhead => false, // sem inimigos no jogo ainda
             _ => false
         };
+        return card.negateCondition ? !result : result;
     }
 
     int SkipToElseOrEndIf(List<CardData> sequence, int from)
@@ -202,7 +250,8 @@ public class SequenceExecutor : MonoBehaviour
         for (int i = from; i < sequence.Count; i++)
         {
             if (sequence[i].cardAction == CardAction.Repeat ||
-                sequence[i].cardAction == CardAction.RepeatUntil) depth++;
+                sequence[i].cardAction == CardAction.RepeatUntil ||
+                sequence[i].cardAction == CardAction.While) depth++;
             if (sequence[i].cardAction == CardAction.EndRepeat)
             {
                 if (depth == 0) return i;

@@ -25,7 +25,7 @@ void Start()
     Debug.Log("CardCarousel Start — leftArrow null: " + (leftArrow == null) + ", rightArrow null: " + (rightArrow == null));
     leftArrow.onClick.AddListener(ScrollLeft);
     rightArrow.onClick.AddListener(ScrollRight);
-    EnsureBasePosition();
+    basePosition = content.anchoredPosition;
 }
 
 // CardCarousel lives under CardsPanel, which starts inactive (fullscreen map
@@ -75,7 +75,7 @@ public void Refresh(int cardCount)
 
 void SnapToIndex(int index, bool animate)
 {
-    EnsureBasePosition();
+    //EnsureBasePosition();
     float step = cardWidth + spacing;
     float targetX = basePosition.x - (index * step);
 

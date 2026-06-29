@@ -14,10 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PhaseData
   phaseId: phase_2
   phaseName: Fase 2
-  lineCount: 10
+  lineCount: 14
   availableCards:
   - {fileID: 11400000, guid: 2ada75cc5b20f54868e6a9deb3792d76, type: 2}
   - {fileID: 11400000, guid: dd6665032a60519ae942fcc75493312e, type: 2}
   - {fileID: 11400000, guid: 448a3bfcf0b92e54ca1cd0488d5b6698, type: 2}
+  - {fileID: 11400000, guid: 7c3e9a1f4b2d6e8a0c5f1d3b9e7a2c46, type: 2}
+  - {fileID: 11400000, guid: 9cf12726594c62f18b8007a6cb6139c6, type: 2}
   gridLevel: {fileID: 11400000, guid: 44e6d08f5bbf4574a8a3529662c77bc4, type: 2}
   nextPhase: {fileID: 0}

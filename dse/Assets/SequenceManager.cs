@@ -63,7 +63,38 @@ void Awake()
     LayoutRebuilder.ForceRebuildLayoutImmediate(
         sequenceContainer.GetComponent<RectTransform>()
     );
+
+    RefreshBlocks();
 }
+
+    // Recalcula a profundidade de cada linha e indenta o corpo dos laços, dando o aspecto de
+    // "bloco" sem drop-zone aninhada. Mesma contagem de brackets que o SequenceExecutor usa.
+    // Chamado pelo DropZone após colocar/remover uma carta.
+    public void RefreshBlocks()
+    {
+        int depth = 0;
+        foreach (DropZone line in lines)
+        {
+            CardData card = line.placedCard;
+            int lineDepth = depth;
+
+            // O FIM alinha com quem abriu o bloco (recua antes de exibir).
+            if (card != null && IsBlockEnd(card.cardAction))
+                lineDepth = Mathf.Max(0, depth - 1);
+
+            line.SetBlockDepth(lineDepth);
+
+            if (card != null && IsBlockStart(card.cardAction))
+                depth++;
+            else if (card != null && IsBlockEnd(card.cardAction))
+                depth = Mathf.Max(0, depth - 1);
+        }
+    }
+
+    static bool IsBlockStart(CardAction a) =>
+        a == CardAction.While || a == CardAction.Repeat || a == CardAction.RepeatUntil;
+
+    static bool IsBlockEnd(CardAction a) => a == CardAction.EndRepeat;
     
     public List<CardData> GetSequence()
     {
