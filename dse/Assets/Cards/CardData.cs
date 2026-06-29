@@ -22,7 +22,11 @@ public enum CardAction
     // Loop
     Repeat,
     EndRepeat,
-    RepeatUntil
+    RepeatUntil,
+
+    // Anexado no fim para não deslocar os índices serializados acima.
+    // While = "enquanto a condição for verdadeira" (laço positivo, ao contrário do RepeatUntil).
+    While
 }
 
 public enum ConditionTarget
@@ -31,7 +35,8 @@ public enum ConditionTarget
     WallAhead,
     EnemyAhead,
     PathClear,
-    // add more as needed
+    // Anexado no fim (mesmo motivo do While): índices novos não podem deslocar os antigos.
+    AtGoal
 }
 
 [CreateAssetMenu(fileName = "NewCard", menuName = "Cards/CardData")]
@@ -53,4 +58,8 @@ public class CardData : ScriptableObject
     
     [Header("Condition / RepeatUntil")]
     public ConditionTarget conditionTarget = ConditionTarget.None;
+
+    // Inverte a condição na avaliação (vale para While e If). Permite frases com "não"
+    // — ex.: "enquanto NÃO no objetivo" = While + AtGoal + negateCondition.
+    public bool negateCondition = false;
 }

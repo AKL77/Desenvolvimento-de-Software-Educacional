@@ -17,5 +17,7 @@ MonoBehaviour:
   lineCount: 10
   availableCards:
   - {fileID: 11400000, guid: 2ada75cc5b20f54868e6a9deb3792d76, type: 2}
+  - {fileID: 11400000, guid: dd6665032a60519ae942fcc75493312e, type: 2}
+  - {fileID: 11400000, guid: 448a3bfcf0b92e54ca1cd0488d5b6698, type: 2}
   gridLevel: {fileID: 11400000, guid: 34e30951b7ef5c745aa03ac0cbd51e2a, type: 2}
   nextPhase: {fileID: 11400000, guid: e5508f95bd43ddb439177fa7243ddcc5, type: 2}

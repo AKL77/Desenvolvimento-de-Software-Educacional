@@ -10,13 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 86ce9f1bb10af639c9025fdd92483f5f, type: 3}
-  m_Name: Card_EndRepeat
+  m_Name: Card_While_EnemyAhead
   m_EditorClassIdentifier: Assembly-CSharp::CardData
-  cardId: end_repeat
-  displayName: "Fim"
+  cardId: while_enemy_ahead
+  displayName: "Enquanto inimigo \xE0 frente"
   cardType: 2
-  cardAction: 7
+  cardAction: 9
   artwork: {fileID: 0}
-  cardColor: {r: 1, g: 0, b: 0, a: 1}
+  cardColor: {r: 0.6, g: 0.2, b: 0.8, a: 1}
   repeatValue: 0
-  conditionTarget: 0
+  conditionTarget: 2
+  negateCondition: 0
