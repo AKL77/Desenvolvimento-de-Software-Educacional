@@ -217,7 +217,7 @@ public class SequenceExecutor : MonoBehaviour
     {
         isRunning = false;
         Debug.Log("SUCCESS — goal reached!");
-        // TODO: trigger win UI, load next phase
+        VictoryPanel.Instance?.Show();
     }
 
     void OnFailure()
