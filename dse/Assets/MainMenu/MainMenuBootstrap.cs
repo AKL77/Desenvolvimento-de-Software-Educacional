@@ -16,9 +16,9 @@ using UnityEngine.InputSystem.UI;
 public class MainMenuBootstrap : MonoBehaviour
 {
     [Header("Configuração")]
-    [Tooltip("Nome da cena do jogo a carregar ao clicar em Começar. " +
+    [Tooltip("Cena carregada ao clicar em Começar (a introdução com história). " +
              "Precisa estar nas Build Settings.")]
-    public string gameSceneName = "MapaMax";
+    public string gameSceneName = "StoryIntro";
 
     const float RefW = 1920f, RefH = 1080f;
     const string Dir = "MainMenu/";
