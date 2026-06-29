@@ -35,44 +35,25 @@ public class StoryIntroBootstrap : MonoBehaviour
 
     const float RefW = 1920f, RefH = 1080f;
     const string Dir = "Story/";
-    const int LightSegmentIndex = 18;
-    const int FallSegmentIndex = 25;
-    const int LoadingSegmentIndex = 28;
+    const int LightSegmentIndex = 7;
+    const int FallSegmentIndex = 10;
+    const int LoadingSegmentIndex = 11;
 
     static readonly string[] Story =
     {
-        "O ano é 2180.",
-        "Pitágoras é um cientista da computação brilhante e trabalha na Mistic, a maior empresa de tecnologia do mundo.",
-        "Nos últimos anos, ele tem se dedicado a um projeto capaz de mudar para sempre a forma como a humanidade vive: uma máquina do tempo.",
-        "Por dominar profundamente a computação e ter uma mente extremamente lógica, Pitágoras se tornou um dos principais cientistas à frente do projeto.",
-        "Para ele, aquele trabalho era mais do que uma pesquisa. Era a chance de realizar algo que muitas pessoas acreditavam ser impossível.",
-        "Pitágoras gostava tanto do que fazia que, muitas vezes, perdia completamente a noção do tempo.",
-        "Passava dias e noites dentro do laboratório, saindo apenas quando precisava ir ao banheiro ou quando a fome se tornava impossível de ignorar.",
-        "Naquela noite, enquanto analisava uma sequência de códigos, Pitágoras sentiu que estava perto de uma descoberta decisiva.",
-        "Por um instante, pensou em verificar a data e a hora.",
-        "Imediatamente, seus óculos inteligentes responderam ao comando mental e projetaram a informação diante de seus olhos: 23:56 h, 28 de outubro.",
-        "O laboratório estava silencioso. Todos já haviam ido embora.",
-        "As luzes frias dos equipamentos eram a única companhia de Pitágoras naquela imensa sala.",
-        "Mesmo assim, ele não pensou em ir para casa. Seus olhos estavam fixos na tela.",
-        "Depois de tantas tentativas, erros e noites sem dormir, ele acreditava ter encontrado o código-chave para fazer a máquina do tempo funcionar.",
-        "Com o coração acelerado, Pitágoras revisou cada linha do programa.",
-        "Conferiu os cálculos, analisou os comandos e verificou todos os sistemas da máquina.",
-        "Tudo parecia estar correto.",
-        "Então, respirou fundo e clicou em \"Executar\".",
-        "No mesmo instante, uma luz intensa tomou conta do laboratório.",
-        "O brilho era tão forte que Pitágoras precisou erguer os braços para proteger os olhos.",
-        "Os equipamentos começaram a vibrar. As luzes piscaram sem controle.",
-        "O chão tremeu sob seus pés, e um som profundo ecoou por todo o laboratório.",
-        "Antes que Pitágoras pudesse reagir, rachaduras começaram a se abrir ao seu redor.",
-        "A máquina do tempo brilhou ainda mais forte, como se estivesse puxando toda a energia do lugar.",
+        "O ano é 2180. Pitágoras é um cientista da computação brilhante e trabalha na Mistic, a maior empresa de tecnologia do mundo.",
+        "Há anos ele se dedica a um projeto capaz de mudar a humanidade: uma máquina do tempo. Por sua mente lógica, tornou-se um dos principais cientistas à frente dela.",
+        "Ele ama tanto o que faz que perde a noção do tempo, passando dias e noites dentro do laboratório.",
+        "Naquela noite, analisando uma sequência de códigos, sentiu que estava perto de uma descoberta decisiva. Seus óculos inteligentes mostraram: 23:56, 28 de outubro.",
+        "O laboratório estava silencioso e vazio. Mesmo assim, ele não pensava em ir para casa: seus olhos estavam fixos na tela.",
+        "Depois de muitas tentativas e noites sem dormir, acreditava ter encontrado o código-chave para a máquina funcionar. Revisou cada linha, conferiu os cálculos e os sistemas. Tudo parecia correto.",
+        "Então respirou fundo e clicou em \"Executar\".",
+        "No mesmo instante, uma luz intensa tomou conta do laboratório, tão forte que ele precisou erguer os braços para proteger os olhos.",
+        "Os equipamentos vibraram, as luzes piscaram e o chão tremeu. Rachaduras se abriram ao redor, e a máquina brilhou ainda mais, sugando toda a energia do lugar.",
         "De repente, o chão desapareceu.",
-        "Pitágoras e a máquina do tempo começaram a cair em um buraco escuro e aparentemente sem fim.",
-        "O vento cortava seu rosto, os sons do laboratório ficaram distantes, e tudo ao seu redor se transformou em sombras e flashes de luz.",
-        "Ele não sabia se estava caindo por segundos, minutos ou horas.",
+        "Pitágoras e a máquina começaram a cair num buraco escuro e sem fim. O vento cortava seu rosto e tudo virou sombras e flashes de luz; ele não sabia se caía por segundos, minutos ou horas.",
         "Até que, de repente, tudo parou.",
-        "Pitágoras sentiu o impacto do chão sob seus pés.",
-        "Aos poucos, abriu os olhos.",
-        "Ele não estava mais no laboratório.",
+        "Pitágoras sentiu o chão sob seus pés e, aos poucos, abriu os olhos. Ele não estava mais no laboratório.",
     };
 
     Text _text;

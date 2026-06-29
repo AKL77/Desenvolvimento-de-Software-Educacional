@@ -163,7 +163,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a2b3c4d5e6f718293a4b5c6d7e8f9012, type: 3}
   m_Name:
   m_EditorClassIdentifier:
-  nextSceneName: MapaMax
+  nextSceneName: Fase1
   typingDelay: 0.028
   laboratoryBackgroundSprite: {fileID: -6324880435504713953, guid: 028931745fa842148971941430bee0cb, type: 3}
   errorSprite: {fileID: 6821343344619960041, guid: 9760bd40478d48148b304df626d87f74, type: 3}
