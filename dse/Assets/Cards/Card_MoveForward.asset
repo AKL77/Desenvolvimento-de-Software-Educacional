@@ -16,7 +16,9 @@ MonoBehaviour:
   displayName: Andar pra frente
   cardType: 0
   cardAction: 0
-  artwork: {fileID: 0}
-  cardColor: {r: 1, g: 0, b: 0.8650882, a: 1}
+  artwork: {fileID: -2282087900034753734, guid: 543dcc126e9cdfe4d95fa963d310b04e, type: 3}
+  cardColor: {r: 1, g: 1, b: 1, a: 1}
+  description: 
   repeatValue: 0
   conditionTarget: 0
+  negateCondition: 0

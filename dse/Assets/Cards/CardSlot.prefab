@@ -340,8 +340,8 @@ MonoBehaviour:
   cardData: {fileID: 0}
   artworkImage: {fileID: 1013573554975671817}
   cardBackground: {fileID: 8753752336972109715}
-  displayNameText: {fileID: 8782273416650251692}
-  repeatValueText: {fileID: 6353242070260817432}
+  displayNameText: {fileID: 0}
+  repeatValueText: {fileID: 0}
   isPlacedCard: 0
   parentDropZone: {fileID: 0}
   isDragging: 0
@@ -443,7 +443,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: 21300000, guid: f1a7eaded160f924697dacd53aa19603, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -511,14 +511,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 5189691121816951081, guid: 164a2867ba697430b880ec2443f96553, type: 3}
+  m_Sprite: {fileID: 0}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1

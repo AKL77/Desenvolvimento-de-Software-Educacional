@@ -13,11 +13,12 @@ MonoBehaviour:
   m_Name: Card_While_PathClear
   m_EditorClassIdentifier: Assembly-CSharp::CardData
   cardId: while_path_clear
-  displayName: "Enquanto caminho livre"
+  displayName: Enquanto caminho livre
   cardType: 2
   cardAction: 9
-  artwork: {fileID: 0}
+  artwork: {fileID: 5840109279387953509, guid: 931ed4c2b0dd74b42ac748b08bbeea61, type: 3}
   cardColor: {r: 0.2, g: 0.5, b: 1, a: 1}
+  description: 
   repeatValue: 0
   conditionTarget: 3
   negateCondition: 0
