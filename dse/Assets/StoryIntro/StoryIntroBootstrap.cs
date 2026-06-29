@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
@@ -10,7 +11,7 @@ using UnityEngine.InputSystem.UI;
 /// caixa de texto na parte inferior com efeito de digitação caractere por
 /// caractere, dividida em trechos. Um botão "Próximo" avança: se o texto ainda
 /// está sendo digitado, completa o trecho atual na hora; se já está completo,
-/// vai para o próximo. Clicar em qualquer lugar da tela também avança.
+/// vai para o próximo. Apenas o botão "Próximo" avança a história.
 /// Ao terminar o último trecho, carrega a próxima cena.
 ///
 /// Construída por código a partir de sprites em Resources/Story/.
@@ -33,50 +34,82 @@ public class StoryIntroBootstrap : MonoBehaviour
     public float blackFadeDuration = 1.6f;
     [Range(0f, 1f)] public float lightOverlayAlpha = 0.78f;
 
+    [Header("Cidade medieval (2a parte da história)")]
+    [Tooltip("Fundo da cidade medieval, mostrado quando Pitágoras chega ao reino. " +
+             "Opcional: se vazio, carrega Resources/Story/city_bg automaticamente.")]
+    public Sprite cityBackgroundSprite;
+    [Tooltip("Retrato de Alan Turing. Aparece à direita, acima da caixa de texto, " +
+             "somente quando Alan está falando. " +
+             "Opcional: se vazio, carrega Resources/Story/alan automaticamente.")]
+    public Sprite alanSprite;
+
     const float RefW = 1920f, RefH = 1080f;
     const string Dir = "Story/";
-    const int LightSegmentIndex = 18;
-    const int FallSegmentIndex = 25;
-    const int LoadingSegmentIndex = 28;
+    const int LightSegmentIndex = 5;
+    const int FallSegmentIndex = 7;
+    const int LoadingSegmentIndex = 9;
+
+    // A partir deste trecho a história se passa na cidade medieval (fundo novo).
+    const int CitySegmentIndex = 10;
+
+    // Trechos em que Alan Turing está falando (ou em que sua imagem surge).
+    // O retrato só aparece nesses índices; em narração ou falas do Pitágoras, fica oculto.
+    static readonly HashSet<int> AlanSegments = new HashSet<int>
+    {
+        17, 18, 20, 21, 22, 24
+    };
+
+    // Nome de quem fala em cada trecho de diálogo (exibido acima da caixa de texto).
+    // Trechos sem entrada aqui são narração e não mostram nome.
+    static readonly Dictionary<int, string> Speakers = new Dictionary<int, string>
+    {
+        { 14, "Pitágoras" },
+        { 18, "Alan Turing" },
+        { 19, "Pitágoras" },
+        { 20, "Alan Turing" },
+        { 21, "Alan Turing" },
+        { 22, "Alan Turing" },
+        { 23, "Pitágoras" },
+        { 24, "Alan Turing" },
+    };
 
     static readonly string[] Story =
     {
-        "O ano é 2180.",
-        "Pitágoras é um cientista da computação brilhante e trabalha na Mistic, a maior empresa de tecnologia do mundo.",
-        "Nos últimos anos, ele tem se dedicado a um projeto capaz de mudar para sempre a forma como a humanidade vive: uma máquina do tempo.",
-        "Por dominar profundamente a computação e ter uma mente extremamente lógica, Pitágoras se tornou um dos principais cientistas à frente do projeto.",
-        "Para ele, aquele trabalho era mais do que uma pesquisa. Era a chance de realizar algo que muitas pessoas acreditavam ser impossível.",
-        "Pitágoras gostava tanto do que fazia que, muitas vezes, perdia completamente a noção do tempo.",
-        "Passava dias e noites dentro do laboratório, saindo apenas quando precisava ir ao banheiro ou quando a fome se tornava impossível de ignorar.",
-        "Naquela noite, enquanto analisava uma sequência de códigos, Pitágoras sentiu que estava perto de uma descoberta decisiva.",
-        "Por um instante, pensou em verificar a data e a hora.",
-        "Imediatamente, seus óculos inteligentes responderam ao comando mental e projetaram a informação diante de seus olhos: 23:56 h, 28 de outubro.",
-        "O laboratório estava silencioso. Todos já haviam ido embora.",
-        "As luzes frias dos equipamentos eram a única companhia de Pitágoras naquela imensa sala.",
-        "Mesmo assim, ele não pensou em ir para casa. Seus olhos estavam fixos na tela.",
-        "Depois de tantas tentativas, erros e noites sem dormir, ele acreditava ter encontrado o código-chave para fazer a máquina do tempo funcionar.",
-        "Com o coração acelerado, Pitágoras revisou cada linha do programa.",
-        "Conferiu os cálculos, analisou os comandos e verificou todos os sistemas da máquina.",
-        "Tudo parecia estar correto.",
-        "Então, respirou fundo e clicou em \"Executar\".",
-        "No mesmo instante, uma luz intensa tomou conta do laboratório.",
-        "O brilho era tão forte que Pitágoras precisou erguer os braços para proteger os olhos.",
-        "Os equipamentos começaram a vibrar. As luzes piscaram sem controle.",
-        "O chão tremeu sob seus pés, e um som profundo ecoou por todo o laboratório.",
-        "Antes que Pitágoras pudesse reagir, rachaduras começaram a se abrir ao seu redor.",
-        "A máquina do tempo brilhou ainda mais forte, como se estivesse puxando toda a energia do lugar.",
-        "De repente, o chão desapareceu.",
-        "Pitágoras e a máquina do tempo começaram a cair em um buraco escuro e aparentemente sem fim.",
-        "O vento cortava seu rosto, os sons do laboratório ficaram distantes, e tudo ao seu redor se transformou em sombras e flashes de luz.",
-        "Ele não sabia se estava caindo por segundos, minutos ou horas.",
-        "Até que, de repente, tudo parou.",
-        "Pitágoras sentiu o impacto do chão sob seus pés.",
-        "Aos poucos, abriu os olhos.",
-        "Ele não estava mais no laboratório.",
+        // ── 1a parte: o laboratório ─────────────────────────────────────
+        "O ano é 2180. Pitágoras é um brilhante cientista da computação na Mistic, a maior empresa de tecnologia do mundo.",
+        "Com sua mente lógica, ele lidera um projeto capaz de mudar a humanidade: uma máquina do tempo.",
+        "Apaixonado pelo trabalho, passava dias e noites no laboratório, perdendo a noção do tempo.",
+        "Naquela noite, sozinho, ele acreditava ter enfim encontrado o código-chave para fazer a máquina funcionar.",
+        "Revisou cada linha, conferiu todos os sistemas e, respirando fundo, clicou em \"Executar\".",
+        "No mesmo instante, uma luz intensa tomou conta do laboratório, e ele precisou proteger os olhos.",   // [luz/erro]
+        "Os equipamentos vibraram, as luzes piscaram sem controle e rachaduras se abriram ao seu redor.",
+        "De repente, o chão desapareceu, e Pitágoras caiu com a máquina em um buraco escuro e sem fim.",       // [queda]
+        "O vento cortava seu rosto e os sons do laboratório ficaram cada vez mais distantes.",
+        "Até que, de repente, tudo parou, e ele sentiu o chão firme sob seus pés.",                            // [loading]
+
+        // ── 2a parte: a cidade medieval (índice 10 em diante) ───────────
+        "Aos poucos, Pitágoras abriu os olhos. Ele não estava mais no laboratório: havia casas de pedra, ruas estreitas e um grande castelo ao fundo.",
+        "A cidade parecia muito antiga, como nos livros de História. Pitágoras entendeu: havia viajado no tempo.",
+        "Ele não sabia para quando — só sabia que precisava voltar para casa.",
+        "Procurando pela máquina, viu um pedaço de metal caído ao seu lado.",
+        "— Isso deve ser parte da máquina... Mas onde estão os outros pedaços?",
+        "Ele guarda o primeiro pedaço.\n\nItem encontrado: Pedaço 1 da máquina do tempo.",
+        "De repente, uma voz sai dos óculos inteligentes:\n— Olá, Pitágoras!",
+        "Ele leva um susto, e uma imagem aparece à sua frente.",
+        "— Meu nome é Alan Turing. Vim ajudar você a voltar para o futuro.",
+        "— Prazer, Alan. Mas quem é você, e por que acham que pode me ajudar?",
+        "— Também fui cientista da computação. No século XX, estudei como uma máquina pode seguir instruções para resolver problemas.",
+        "— Por isso a Mistic me recriou aqui, para guiar você. Para voltar, você terá de reconstruir a máquina, achando os pedaços perdidos pelo reino.",
+        "— Não será simples: use lógica, algoritmos e boas escolhas para avançar.",
+        "— Entendi! Por onde eu começo?",
+        "— O próximo pedaço está na entrada do castelo. Caminhe até lá para encontrá-lo.",
     };
 
     Text _text;
+    Text _speakerText;
     Image _backgroundImage;
+    Image _cityImage;
+    Image _alanImage;
     Image _lightOverlay;
     Image _blackOverlay;
     Image _errorImage;
@@ -130,19 +163,14 @@ public class StoryIntroBootstrap : MonoBehaviour
 
         // Fundo e efeitos visuais da historia.
         _backgroundImage = AddBackground(laboratoryBackgroundSprite, "lab_bg", root);
+        _cityImage = AddBackground(cityBackgroundSprite, "city_bg", root);
+        _cityImage.enabled = false; // só aparece na 2a parte (cidade medieval)
         _lightOverlay = AddFullScreenImage("LightOverlay", root, new Color(1f, 1f, 1f, 0f));
         _errorImage = AddEffectImage("ErrorEffect", root, errorSprite, new Vector2(0f, 110f));
         _blackOverlay = AddFullScreenImage("BlackOverlay", root, new Color(0f, 0f, 0f, 0f));
         _loadingImage = AddEffectImage("LoadingEffect", root, loadingSprite, new Vector2(0f, 110f));
         _errorGifPlayer = AddGifPlayer(_errorImage, "Story/error_gif", errorSprite);
         _loadingGifPlayer = AddGifPlayer(_loadingImage, "Story/loading_gif", loadingSprite);
-
-        // Catcher de clique em qualquer lugar (atrás da caixa, avança a história)
-        var catcher = NewImage("ClickCatcher", root);
-        catcher.color = new Color(0, 0, 0, 0);
-        catcher.raycastTarget = true;
-        StretchFull(catcher.rectTransform);
-        AddButton(catcher.gameObject, null, null);
 
         // Caixa de texto (parte inferior)
         var panelSp = Resources.Load<Sprite>(Dir + "story_panel");
@@ -171,7 +199,25 @@ public class StoryIntroBootstrap : MonoBehaviour
         trt.anchorMin = new Vector2(0f, 0f);
         trt.anchorMax = new Vector2(1f, 1f);
         trt.offsetMin = new Vector2(54f, 96f);   // deixa espaço embaixo p/ o botão
-        trt.offsetMax = new Vector2(-54f, -34f);
+        trt.offsetMax = new Vector2(-54f, -64f); // deixa espaço no topo p/ o nome de quem fala
+
+        // Nome de quem está falando (acima do texto, fonte menor e colorida).
+        // Fica oculto em trechos de narração.
+        var nameGo = new GameObject("SpeakerName", typeof(RectTransform), typeof(CanvasRenderer), typeof(Text));
+        nameGo.transform.SetParent(panel.transform, false);
+        _speakerText = nameGo.GetComponent<Text>();
+        _speakerText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+        _speakerText.fontSize = 27;
+        _speakerText.fontStyle = FontStyle.Bold;
+        _speakerText.alignment = TextAnchor.UpperLeft;
+        _speakerText.horizontalOverflow = HorizontalWrapMode.Overflow;
+        _speakerText.verticalOverflow = VerticalWrapMode.Overflow;
+        _speakerText.raycastTarget = false;
+        var srt = _speakerText.rectTransform;
+        srt.anchorMin = srt.anchorMax = srt.pivot = new Vector2(0f, 1f); // topo-esquerda da caixa
+        srt.sizeDelta = new Vector2(600f, 34f);
+        srt.anchoredPosition = new Vector2(54f, -16f);
+        _speakerText.gameObject.SetActive(false);
 
         // Botão "Próximo" (canto inferior direito da caixa)
         var btnSp = Resources.Load<Sprite>(Dir + "story_next_normal");
@@ -185,6 +231,44 @@ public class StoryIntroBootstrap : MonoBehaviour
         if (btnSp != null) brt.sizeDelta = new Vector2(btnSp.rect.width, btnSp.rect.height);
         brt.anchoredPosition = new Vector2(-34f, 26f);
         AddButton(btnImg.gameObject, btnImg, btnHi);
+
+        // Retrato do Alan Turing: lado direito, acima da caixa de texto.
+        // Começa oculto; ApplyVisualState o mostra apenas quando Alan fala.
+        float panelHeight = panelSp != null ? panelSp.rect.height : 360f;
+        float panelTopY = 60f + panelHeight; // borda superior da caixa de texto
+        AddAlanPortrait(root, panelTopY);    // base colada no topo da caixa, sem espaço vazio
+    }
+
+    void AddAlanPortrait(Transform parent, float bottomY)
+    {
+        // Usa o sprite atribuído no Inspector ou, por padrão, o de Resources/Story/alan.
+        Sprite sprite = alanSprite != null ? alanSprite : Resources.Load<Sprite>(Dir + "alan");
+
+        _alanImage = NewImage("AlanPortrait", parent);
+        _alanImage.sprite = sprite;
+        _alanImage.preserveAspect = true;
+        _alanImage.raycastTarget = false;
+
+        var rt = _alanImage.rectTransform;
+        rt.anchorMin = rt.anchorMax = rt.pivot = new Vector2(1f, 0f); // canto inferior direito
+
+        // Altura do retrato: cabe entre o topo da caixa e o topo da tela, com um teto
+        // menor para o Alan não ficar grande demais.
+        float maxH = Mathf.Min(440f, Mathf.Max(200f, RefH - bottomY - 20f));
+
+        if (sprite != null)
+        {
+            float scale = Mathf.Min(maxH / sprite.rect.height, 1f);
+            rt.sizeDelta = new Vector2(sprite.rect.width * scale, sprite.rect.height * scale);
+        }
+        else
+        {
+            float aspect = 360f / 540f;
+            rt.sizeDelta = new Vector2(maxH * aspect, maxH);
+        }
+
+        rt.anchoredPosition = new Vector2(-90f, bottomY);
+        _alanImage.gameObject.SetActive(false);
     }
 
     void AddButton(GameObject go, Image target, Sprite hover)
@@ -214,7 +298,35 @@ public class StoryIntroBootstrap : MonoBehaviour
         _index = i;
         if (_typing != null) StopCoroutine(_typing);
         ApplyVisualState(i);
+        ApplySpeaker(i);
         _typing = StartCoroutine(TypeRoutine(Story[i]));
+    }
+
+    // Mostra o nome de quem fala (acima do texto), ou oculta em trechos de narração.
+    void ApplySpeaker(int segmentIndex)
+    {
+        if (_speakerText == null) return;
+
+        if (Speakers.TryGetValue(segmentIndex, out string speaker))
+        {
+            _speakerText.text = speaker;
+            _speakerText.color = GetSpeakerColor(speaker);
+            _speakerText.gameObject.SetActive(true);
+        }
+        else
+        {
+            _speakerText.gameObject.SetActive(false);
+        }
+    }
+
+    static Color GetSpeakerColor(string speaker)
+    {
+        switch (speaker)
+        {
+            case "Alan Turing": return new Color(0.45f, 0.78f, 1f);   // azul claro
+            case "Pitágoras":   return new Color(1f, 0.78f, 0.35f);   // âmbar
+            default:            return new Color(0.85f, 0.85f, 0.85f);
+        }
     }
 
     IEnumerator TypeRoutine(string full)
@@ -257,6 +369,17 @@ public class StoryIntroBootstrap : MonoBehaviour
 
     void ApplyVisualState(int segmentIndex)
     {
+        // 2a parte: a história se passa na cidade medieval.
+        if (segmentIndex >= CitySegmentIndex)
+        {
+            ApplyCityState(segmentIndex);
+            return;
+        }
+
+        // Fora da cidade, garante cenário/retrato da 2a parte ocultos.
+        if (_cityImage != null) _cityImage.enabled = false;
+        SetAlanVisible(false);
+
         bool isFall = segmentIndex >= FallSegmentIndex;
         bool isLoading = segmentIndex >= LoadingSegmentIndex;
 
@@ -295,6 +418,30 @@ public class StoryIntroBootstrap : MonoBehaviour
                 SetAlpha(_lightOverlay, 0f);
             }
         }
+    }
+
+    // Estado visual da 2a parte: cidade medieval ao fundo, sem efeitos do
+    // laboratório. O retrato do Alan aparece só nos trechos em que ele fala.
+    void ApplyCityState(int segmentIndex)
+    {
+        StopLightFade();
+        StopBlackFade();
+        SetAlpha(_lightOverlay, 0f);
+        SetAlpha(_blackOverlay, 0f);
+        SetGifVisible(_errorImage, _errorGifPlayer, false);
+        SetGifVisible(_loadingImage, _loadingGifPlayer, false);
+
+        if (_backgroundImage != null) _backgroundImage.enabled = false;
+        if (_cityImage != null) _cityImage.enabled = true;
+
+        SetAlanVisible(AlanSegments.Contains(segmentIndex));
+    }
+
+    void SetAlanVisible(bool visible)
+    {
+        if (_alanImage == null) return;
+        if (_alanImage.gameObject.activeSelf != visible)
+            _alanImage.gameObject.SetActive(visible);
     }
 
     void StartLightFade()
