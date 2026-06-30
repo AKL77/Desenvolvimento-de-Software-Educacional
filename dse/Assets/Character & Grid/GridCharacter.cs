@@ -132,9 +132,13 @@ public class GridCharacter : MonoBehaviour, IGridCharacter
         _                     =>   0f
     };
 
+    // Offset base de 90° (CCW = esquerda) porque o sprite do personagem aponta pra direita
+    // em sua orientação natural, não pra cima como o triângulo antigo.
+    const float SpriteBaseZOffset = 90f;
+
     void ApplyFacingRotation(bool instant = false)
     {
-        float z = FacingToZRotation(_facing);
+        float z = FacingToZRotation(_facing) + SpriteBaseZOffset;
         if (instant)
             characterRect.localEulerAngles = new Vector3(0, 0, z);
         else

@@ -17,7 +17,7 @@ MonoBehaviour:
   cardType: 2
   cardAction: 7
   artwork: {fileID: 1455390075831268699, guid: 80b6f4a5a26f8f941b24522ea5659b72, type: 3}
-  cardColor: {r: 1, g: 0, b: 0, a: 1}
+  cardColor: {r: 1, g: 1, b: 1, a: 1}
   description: 
   repeatValue: 0
   conditionTarget: 0
