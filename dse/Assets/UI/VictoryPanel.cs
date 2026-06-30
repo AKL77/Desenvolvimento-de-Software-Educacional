@@ -68,8 +68,18 @@ public class VictoryPanel : MonoBehaviour
     void OnNextPhase()
     {
         PhaseData next = shownPhase != null ? shownPhase.nextPhase : null;
+        string completedPhaseId = shownPhase != null ? shownPhase.phaseId : null;
         Hide();
-        if (next != null)
-            PhaseManager.Instance.LoadPhase(next);
+
+        void LoadNext()
+        {
+            if (next != null)
+                PhaseManager.Instance.LoadPhase(next);
+        }
+
+        // Se a fase concluída tiver um diálogo de fim (ex.: o Alan explicando o que é
+        // um algoritmo após a 1a fase), mostra a história antes de carregar a próxima.
+        if (!StoryInterludeBootstrap.TryPlay(completedPhaseId, LoadNext))
+            LoadNext();
     }
 }
