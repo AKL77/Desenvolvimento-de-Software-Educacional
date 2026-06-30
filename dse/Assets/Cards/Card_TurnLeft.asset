@@ -16,7 +16,9 @@ MonoBehaviour:
   displayName: Virar pra esquerda
   cardType: 0
   cardAction: 1
-  artwork: {fileID: 0}
-  cardColor: {r: 0.08493757, g: 0, b: 0.5, a: 1}
+  artwork: {fileID: -5439281852147085332, guid: 4b19d6a2c3418d342997aec67b0ad012, type: 3}
+  cardColor: {r: 1, g: 1, b: 1, a: 1}
+  description: 
   repeatValue: 0
   conditionTarget: 0
+  negateCondition: 0

@@ -49,7 +49,7 @@ public class CardView : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
         return;
     }
 
-    Debug.Log($"[CardView] RefreshVisuals '{cardData.displayName}' on '{gameObject.name}' — " +
+    Debug.LogError($"[CardView] RefreshVisuals '{cardData.displayName}' on '{gameObject.name}' — " +
         $"cardBackground={(cardBackground != null ? "OK" : "NULL")} " +
         $"(active={(cardBackground != null ? cardBackground.gameObject.activeInHierarchy.ToString() : "n/a")}, " +
         $"sprite={(cardBackground != null ? (cardBackground.sprite != null ? cardBackground.sprite.name : "NULL") : "n/a")}), " +
@@ -58,9 +58,11 @@ public class CardView : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
     // Apply color to background
     if (cardBackground != null)
         cardBackground.color = cardData.cardColor;
+        //set card imageBa
+        cardBackground.sprite = cardData.artwork; // Ensure background is visible
+                                                   // Only apply artwork sprite if one is set
 
-    // Only apply artwork sprite if one is set
-    if (artworkImage != null)
+        if (artworkImage != null)
     {
         if (cardData.artwork != null)
         {
@@ -70,7 +72,8 @@ public class CardView : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
         else
         {
             // No artwork set — hide the artwork image entirely
-            artworkImage.gameObject.SetActive(false);
+            Debug.LogError($"[CardView] No artwork for '{cardData.displayName}' — hiding artworkImage on '{gameObject.name}'");
+                artworkImage.gameObject.SetActive(false);
         }
     }
 
