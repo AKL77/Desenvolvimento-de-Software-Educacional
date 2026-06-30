@@ -3223,6 +3223,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::GridVisualizer
   levelData: {fileID: 11400000, guid: 34e30951b7ef5c745aa03ac0cbd51e2a, type: 2}
   tilePrefab: {fileID: 28292006993978128, guid: fd2b5e0adfcaeba40a06e646cc1d65dc, type: 3}
+  phaseBackground: {fileID: 21300000, guid: c2a14b92f1fa4b6583700ea0181f3f07, type: 3}
 --- !u!1 &1820284097
 GameObject:
   m_ObjectHideFlags: 0
